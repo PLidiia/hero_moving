@@ -1,31 +1,41 @@
 import pygame
 
+FPS = 30
 
-class Cursor(pygame.sprite.Sprite):
+
+class Creature(pygame.sprite.Sprite):
     def __init__(self, group):
         super().__init__(group)
-        self.image = pygame.image.load('data/arrow.png')
+        self.image = pygame.image.load('data/creature.png').convert()
         self.rect = self.image.get_rect()
-
-    def update(self, *args):
-        pygame.mouse.set_visible(False)
-        x, y = pygame.mouse.get_pos()
-        screen.blit(self.image, (x, y))
 
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 500, 500
+    size = width, height = 300, 300
     screen = pygame.display.set_mode(size)
-    pygame.display.set_caption('Свой курсор мыши')
+    pygame.display.set_caption('Герой двигается!')
     group = pygame.sprite.Group()
-    cursor = Cursor(group)
+    creature = Creature(group)
+    x, y = 0, 0
+    screen.fill((255, 255, 255))
+    clock = pygame.time.Clock()
     running = True
     while running:
-        screen.fill((0, 0, 0))
+        clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        if pygame.mouse.get_focused():
-            cursor.update()
+                pygame.quit()
+        keys_pressed = pygame.key.get_pressed()
+        if keys_pressed[pygame.K_UP]:
+            creature.rect.y -= 10
+        elif keys_pressed[pygame.K_DOWN]:
+            creature.rect.y += 10
+        elif keys_pressed[pygame.K_LEFT]:
+            creature.rect.x -= 10
+        elif keys_pressed[pygame.K_RIGHT]:
+            creature.rect.x += 10
+        screen.fill((255, 255, 255))
+        screen.blit(creature.image, creature.rect)
         pygame.display.flip()
